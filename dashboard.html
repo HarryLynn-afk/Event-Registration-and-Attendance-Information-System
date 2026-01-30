@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header">
+    <h1>Campus Events</h1>
+    <h2>Attendance Dashboard</h2>
+  </div>
+
+  <!-- Event Selector -->
+  <div class="dashboard-top">
+    <select class="event-select">
+      <option>Select an event</option>
+      <option>Tech Talk: Introduction to AI</option>
+      <option>Career Fair 2026</option>
+      <option>Photography Workshop</option>
+    </select>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card">
+      <p>Total Registered</p>
+      <h3>5</h3>
+    </div>
+    <div class="summary-card">
+      <p>Total Checked-in</p>
+      <h3>3</h3>
+    </div>
+  </div>
+
+  <!-- Attendance Table -->
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Student ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Check-in Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>STU001</td>
+          <td>John Doe</td>
+          <td>john@university.edu</td>
+          <td><span class="status yes">Checked In</span></td>
+        </tr>
+        <tr>
+          <td>STU002</td>
+          <td>Jane Smith</td>
+          <td>jane@university.edu</td>
+          <td><span class="status yes">Checked In</span></td>
+        </tr>
+        <tr>
+          <td>STU003</td>
+          <td>Bob Johnson</td>
+          <td>bob@university.edu</td>
+          <td><span class="status no">Not Checked In</span></td>
+        </tr>
+        <tr>
+          <td>STU004</td>
+          <td>Alice Brown</td>
+          <td>alice@university.edu</td>
+          <td><span class="status no">Not Checked In</span></td>
+        </tr>
+        <tr>
+          <td>STU005</td>
+          <td>Charlie Wilson</td>
+          <td>charlie@university.edu</td>
+          <td><span class="status yes">Checked In</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

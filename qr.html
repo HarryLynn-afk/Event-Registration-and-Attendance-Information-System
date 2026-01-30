@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My QR Code</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="header">
+    <h1>Campus Events</h1>
+  </div>
+
+  <div class="qr-container">
+    <div class="qr-box">QR Code</div>
+
+    <h2 class="student-name" id="qrName"></h2>
+<p class="event-name" id="qrEvent"></p>
+
+
+    <button class="back-btn" onclick="history.back()">← Back</button>
+  </div>
+<script>
+document.getElementById("qrName").innerText = localStorage.getItem("studentName");
+document.getElementById("qrEvent").innerText = localStorage.getItem("selectedEvent");
+</script>
+
+</body>
+</html>

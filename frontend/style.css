@@ -182,11 +182,13 @@ body {
 }
 
 .event-select {
-  padding: 10px;
+  padding: 10px 14px;
   border-radius: 6px;
-  border: 1px solid #ddd;
+  border: 1px solid #d1d5db;
   font-size: 14px;
   min-width: 280px;
+  background: white;
+  cursor: pointer;
 }
 
 /* Summary Cards */
@@ -390,10 +392,10 @@ th {
 
 .status.yes {
   background: #dcfce7;
-  color: #16a34a;
+  color: #166534;
 }
 
 .status.no {
-  background: #fef3c7;
-  color: #d97706;
+  background: #fef9c3;
+  color: #854d0e;
 }

@@ -7,81 +7,176 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="api.js"></script>
+  <style>
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .back-link {
+      display: inline-block;
+      margin: 20px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back-link:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
 
+  <a href="index.html" class="back-link">← Back to Home</a>
+
   <div class="header">
-    <h1>Campus Events</h1>
-    <h2>Attendance Dashboard</h2>
-  </div>
-
-  <!-- Event Selector -->
-  <div class="dashboard-top">
-    <select class="event-select">
-      <option>Select an event</option>
-      <option>Tech Talk: Introduction to AI</option>
-      <option>Career Fair 2026</option>
-      <option>Photography Workshop</option>
-    </select>
-  </div>
-
-  <!-- Summary Cards -->
-  <div class="summary-cards">
-    <div class="summary-card">
-      <p>Total Registered</p>
-      <h3>5</h3>
-    </div>
-    <div class="summary-card">
-      <p>Total Checked-in</p>
-      <h3>3</h3>
+    <div style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+      <div>
+        <h1>Campus Events</h1>
+        <h2>Attendance Dashboard</h2>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="checkin.html" class="dashboard-link">📱 Staff Check-In</a>
+        <a href="create_event.html" class="dashboard-link">➕ Create Event</a>
+      </div>
     </div>
   </div>
 
-  <!-- Attendance Table -->
-  <div class="table-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Student ID</th>
-          <th>Name</th>
-          <th>Email</th>
-          <th>Check-in Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>STU001</td>
-          <td>John Doe</td>
-          <td>john@university.edu</td>
-          <td><span class="status yes">Checked In</span></td>
-        </tr>
-        <tr>
-          <td>STU002</td>
-          <td>Jane Smith</td>
-          <td>jane@university.edu</td>
-          <td><span class="status yes">Checked In</span></td>
-        </tr>
-        <tr>
-          <td>STU003</td>
-          <td>Bob Johnson</td>
-          <td>bob@university.edu</td>
-          <td><span class="status no">Not Checked In</span></td>
-        </tr>
-        <tr>
-          <td>STU004</td>
-          <td>Alice Brown</td>
-          <td>alice@university.edu</td>
-          <td><span class="status no">Not Checked In</span></td>
-        </tr>
-        <tr>
-          <td>STU005</td>
-          <td>Charlie Wilson</td>
-          <td>charlie@university.edu</td>
-          <td><span class="status yes">Checked In</span></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="dashboard-container">
+    <!-- Event Selector -->
+    <div class="dashboard-top">
+      <select class="event-select" id="eventSelect" onchange="loadAttendanceData()">
+        <option value="">Select an event</option>
+      </select>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="summary-cards">
+      <div class="summary-card">
+        <p>Total Registered</p>
+        <h3 id="totalRegistered">0</h3>
+      </div>
+      <div class="summary-card">
+        <p>Total Checked-in</p>
+        <h3 id="totalCheckedIn">0</h3>
+      </div>
+    </div>
+
+    <!-- Attendance Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Check-in Status</th>
+          </tr>
+        </thead>
+        <tbody id="attendanceTable">
+          <tr>
+            <td colspan="4" style="text-align: center; color: #9ca3af;">Select an event to view attendance</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
+
+<script>
+let allEvents = [];
+
+function requireStaffAuth() {
+    const staffAuthed = sessionStorage.getItem("staffAuthed");
+    if (staffAuthed !== "true") {
+        window.location.href = "index.html?staff=1";
+        return false;
+    }
+    return true;
+}
+
+async function initializeDashboard() {
+    await loadEventOptions();
+}
+
+async function loadEventOptions(selectedId = "") {
+    allEvents = await fetchEvents();
+    const eventSelect = document.getElementById('eventSelect');
+    eventSelect.innerHTML = '<option value="">Select an event</option>';
+
+    allEvents.forEach(event => {
+        const option = document.createElement('option');
+        option.value = event.id;
+        option.textContent = event.title;
+        eventSelect.appendChild(option);
+    });
+
+    if (selectedId) {
+        eventSelect.value = String(selectedId);
+    }
+}
+
+async function loadAttendanceData() {
+    const eventSelect = document.getElementById('eventSelect');
+    const selectedEventId = eventSelect.value;
+
+    if (!selectedEventId) {
+        document.getElementById('attendanceTable').innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; color: #9ca3af;">Select an event to view attendance</td>
+            </tr>
+        `;
+        document.getElementById('totalRegistered').textContent = '0';
+        document.getElementById('totalCheckedIn').textContent = '0';
+        return;
+    }
+
+    // Filter registrations and attendance for selected event
+    const registrations = await fetch(`${API_BASE_URL}/events/${selectedEventId}/registrations`, {
+        headers: getStaffHeaders(),
+    })
+        .then(r => r.ok ? r.json() : [])
+        .catch(() => []);
+
+    const totalRegistered = registrations.length;
+    const totalCheckedIn = registrations.filter(r => r.checked_in_at).length;
+
+    document.getElementById('totalRegistered').textContent = totalRegistered;
+    document.getElementById('totalCheckedIn').textContent = totalCheckedIn;
+
+    // Generate table rows
+    const tableBody = document.getElementById('attendanceTable');
+    
+    if (registrations.length === 0) {
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="4" style="text-align: center; color: #9ca3af;">No registrations for this event</td>
+            </tr>
+        `;
+        return;
+    }
+
+    tableBody.innerHTML = registrations.map(reg => `
+        <tr>
+            <td>${reg.student_id}</td>
+            <td>${reg.name}</td>
+            <td>${reg.email}</td>
+            <td>
+                <span class="status ${reg.checked_in_at ? 'yes' : 'no'}">
+                    ${reg.checked_in_at ? 'Checked In' : 'Not Checked In'}
+                </span>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// Initialize when page loads
+document.addEventListener('DOMContentLoaded', () => {
+    if (!requireStaffAuth()) {
+        return;
+    }
+    initializeDashboard();
+});
+</script>
 
 </body>
 </html>

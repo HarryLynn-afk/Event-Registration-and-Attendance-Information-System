@@ -1,0 +1,774 @@
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.4/html5-qrcode.min.js"></script>
+  <script src="api.js"></script>
+  <style>
+    .checkin-container {
+      max-width: 500px;
+      margin: 60px auto;
+      background: white;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    .checkin-container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .scanner-section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+
+    .scanner-section h3 {
+      font-size: 16px;
+      margin-bottom: 15px;
+      color: #374151;
+    }
+
+    #qr-reader {
+      width: 100%;
+      border-radius: 8px;
+      overflow: hidden;
+      display: none;
+    }
+
+    #qr-reader.active {
+      display: block;
+      margin-bottom: 15px;
+      background: #000;
+      min-height: 300px;
+    }
+
+    .scanner-buttons {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .scan-btn {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .scan-btn.start {
+      background: #10b981;
+      color: white;
+    }
+
+    .scan-btn.start:hover:not(:disabled) {
+      background: #059669;
+    }
+
+    .scan-btn.stop {
+      background: #ef4444;
+      color: white;
+    }
+
+    .scan-btn.stop:hover:not(:disabled) {
+      background: #dc2626;
+    }
+
+    .scan-btn:disabled {
+      background: #d1d5db;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 25px 0;
+      position: relative;
+      color: #9ca3af;
+      font-size: 14px;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .divider span {
+      background: white;
+      padding: 0 8px;
+      position: relative;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .checkin-btn {
+      width: 100%;
+      padding: 12px;
+      margin-top: 25px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .checkin-btn:hover:not(:disabled) {
+      background: #1d4ed8;
+    }
+
+    .checkin-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .message-box {
+      margin-top: 25px;
+      padding: 16px;
+      border-radius: 8px;
+      display: none;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .message-box.success {
+      background: #dbeafe;
+      border: 1px solid #93c5fd;
+      color: #1e40af;
+      display: block;
+    }
+
+    .message-box.error {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      display: block;
+    }
+
+    .message-box.info {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      color: #92400e;
+      display: block;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 20px;
+      color: #2563eb;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .info-text {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 15px;
+      padding: 12px;
+      background: #f9fafb;
+      border-radius: 6px;
+    }
+
+    .camera-permission-denied {
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      font-size: 13px;
+    }
+
+    .verify-btn {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 6px;
+      background: #0f172a;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .verify-btn:hover:not(:disabled) {
+      background: #1f2937;
+    }
+
+    .verify-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .verification-card {
+      margin-top: 20px;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      display: none;
+    }
+
+    .verification-card h3 {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .verification-status {
+      margin-top: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .verification-status.ready {
+      color: #166534;
+    }
+
+    .verification-status.blocked {
+      color: #b45309;
+    }
+
+    .manual-token {
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px dashed #d1d5db;
+      background: #fff;
+    }
+
+    .manual-token summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>Campus Events</h1>
+  </div>
+
+  <a href="dashboard.html" class="back-link" style="margin: 20px;">← Back to Dashboard</a>
+
+  <div class="checkin-container">
+    <h2>Staff Check-In</h2>
+    
+    <!-- QR Scanner Section -->
+    <div class="scanner-section">
+      <h3>📱 Scan QR Code</h3>
+      <div id="qr-reader"></div>
+      <div class="scanner-buttons">
+        <button class="scan-btn start" id="startScanBtn" onclick="startScanner()">Start Scan</button>
+        <button class="scan-btn stop" id="stopScanBtn" onclick="stopScanner()" disabled>Stop Scan</button>
+      </div>
+      <div id="scanStatus" class="info-text" style="display: none;"></div>
+      <div id="cameraError" class="camera-permission-denied" style="display: none;"></div>
+    </div>
+
+    <!-- Manual Verification -->
+    <div class="divider"><span>Manual Verification</span></div>
+
+    <div class="form-group">
+      <label for="eventId">Event ID</label>
+      <input 
+        type="number" 
+        id="eventId" 
+        placeholder="Enter event ID" 
+        min="1"
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="studentId">Student ID</label>
+      <input 
+        type="text" 
+        id="studentId" 
+        placeholder="Enter student ID" 
+      >
+    </div>
+
+    <div class="form-group">
+      <label for="studentName">Student Name (optional)</label>
+      <input 
+        type="text" 
+        id="studentName" 
+        placeholder="Enter student name" 
+      >
+    </div>
+
+    <button class="verify-btn" id="verifyByIdBtn" onclick="verifyById()">Verify by Student ID</button>
+
+    <details class="manual-token">
+      <summary>Have a QR token? Enter it manually</summary>
+      <div class="form-group" style="margin-top: 12px;">
+        <label for="qrTokenInput">QR Token</label>
+        <input 
+          type="text" 
+          id="qrTokenInput" 
+          placeholder="Enter QR token (e.g., EV1-ABC12345)" 
+        >
+      </div>
+      <button class="verify-btn" id="verifyByTokenBtn" onclick="verifyTokenManual()">Verify by Token</button>
+    </details>
+
+    <input type="hidden" id="qrToken">
+
+    <div class="verification-card" id="verificationCard">
+      <h3>Verification</h3>
+      <p><strong>Name:</strong> <span id="verifiedName">-</span></p>
+      <p><strong>Student ID:</strong> <span id="verifiedStudentId">-</span></p>
+      <p id="verificationStatus" class="verification-status"></p>
+    </div>
+
+    <button class="checkin-btn" id="approveBtn" onclick="performCheckin()" disabled>Approve Check-In</button>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <div class="info-text">
+      <strong>How to use:</strong><br>
+      1. Click "Start Scan" to activate camera<br>
+      2. Point camera at QR code<br>
+      3. Student info appears for verification<br>
+      4. Click "Approve Check-In" to confirm<br>
+      5. If scan fails, verify by Student ID or enter QR token manually
+    </div>
+  </div>
+
+<script>
+let html5QrcodeScanner = null;
+let scannerActive = false;
+let verifiedPayload = null;
+
+function requireStaffAuth() {
+    const staffAuthed = sessionStorage.getItem("staffAuthed");
+    if (staffAuthed !== "true") {
+        window.location.href = "index.html?staff=1";
+        return false;
+    }
+    return true;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!requireStaffAuth()) {
+        return;
+    }
+});
+
+function startScanner() {
+    const startBtn = document.getElementById("startScanBtn");
+    const stopBtn = document.getElementById("stopScanBtn");
+    const qrReader = document.getElementById("qr-reader");
+    const cameraError = document.getElementById("cameraError");
+
+    startBtn.disabled = true;
+
+    // Initialize scanner
+    html5QrcodeScanner = new Html5QrcodeScanner(
+        "qr-reader",
+        { 
+            fps: 10,
+            qrbox: { width: 250, height: 250},
+            rememberLastUsedCamera: true,
+            showTorchButtonIfSupported: true,
+        },
+        false
+    );
+
+    html5QrcodeScanner.render(onScanSuccess, onScanError);
+    qrReader.classList.add("active");
+    stopBtn.disabled = false;
+    scannerActive = true;
+    cameraError.style.display = "none";
+
+    document.getElementById("scanStatus").textContent = "🎥 Camera active - point at QR code";
+    document.getElementById("scanStatus").style.display = "block";
+    resetVerification();
+}
+
+function stopScanner() {
+    if (html5QrcodeScanner) {
+        html5QrcodeScanner.clear();
+        html5QrcodeScanner = null;
+    }
+
+    document.getElementById("qr-reader").classList.remove("active");
+    document.getElementById("startScanBtn").disabled = false;
+    document.getElementById("stopScanBtn").disabled = true;
+    document.getElementById("scanStatus").style.display = "none";
+    scannerActive = false;
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+    console.log("QR Code scanned:", decodedText);
+    resetVerification();
+
+    try {
+        // Try to parse as JSON
+        const payload = JSON.parse(decodedText);
+        
+        if (payload.event_id && payload.qr_token) {
+            // Valid QR payload
+            document.getElementById("eventId").value = payload.event_id;
+            document.getElementById("qrToken").value = payload.qr_token;
+            
+            // Stop scanner
+            stopScanner();
+            
+            // Show status and verify
+            document.getElementById("scanStatus").textContent = "✅ QR detected! Verifying student...";
+            document.getElementById("scanStatus").style.display = "block";
+            
+            verifyCheckin(payload.event_id, payload.qr_token, null);
+            
+            return;
+        }
+    } catch (e) {
+        // Not JSON, treat as token
+        document.getElementById("qrToken").value = decodedText;
+        const qrTokenInput = document.getElementById("qrTokenInput");
+        if (qrTokenInput) {
+            qrTokenInput.value = decodedText;
+        }
+    }
+
+    stopScanner();
+    document.getElementById("scanStatus").textContent = "QR token detected. Enter Event ID and click Verify by Token.";
+    document.getElementById("scanStatus").style.display = "block";
+
+    // Fallback: just fill token field
+    document.getElementById("eventId").focus();
+}
+
+function onScanError(error) {
+    // Errors are normal during scanning (no QR detected yet), ignore them
+    // Only show critical errors
+    if (error && error.includes("NotAllowedError")) {
+        showCameraError("Camera permission denied. Please enable camera access.");
+        stopScanner();
+    }
+}
+
+function showCameraError(message) {
+    document.getElementById("cameraError").textContent = message;
+    document.getElementById("cameraError").style.display = "block";
+}
+
+function formatStudentLine(data) {
+    const studentName = data && data.name ? data.name : "";
+    const studentId = data && data.student_id ? data.student_id : "";
+    if (!studentName && !studentId) {
+        return "";
+    }
+    const label = studentName && studentId ? `${studentName} (${studentId})` : (studentName || studentId);
+    return `<br><strong>Student:</strong> ${label}`;
+}
+
+function setVerifyButtonsLoading(activeButton) {
+    const idButton = document.getElementById("verifyByIdBtn");
+    const tokenButton = document.getElementById("verifyByTokenBtn");
+
+    if (activeButton) {
+        activeButton.dataset.originalText = activeButton.textContent;
+        activeButton.textContent = "Verifying...";
+    }
+
+    idButton.disabled = true;
+    tokenButton.disabled = true;
+}
+
+function resetVerifyButtons(activeButton) {
+    const idButton = document.getElementById("verifyByIdBtn");
+    const tokenButton = document.getElementById("verifyByTokenBtn");
+
+    idButton.disabled = false;
+    tokenButton.disabled = false;
+
+    if (activeButton && activeButton.dataset.originalText) {
+        activeButton.textContent = activeButton.dataset.originalText;
+        delete activeButton.dataset.originalText;
+    }
+}
+
+function resetVerification() {
+    verifiedPayload = null;
+    const card = document.getElementById("verificationCard");
+    const status = document.getElementById("verificationStatus");
+    const approveBtn = document.getElementById("approveBtn");
+    const eventIdInput = document.getElementById("eventId");
+
+    card.style.display = "none";
+    status.textContent = "";
+    status.className = "verification-status";
+    approveBtn.disabled = true;
+    eventIdInput.readOnly = false;
+    document.getElementById("verifiedName").textContent = "-";
+    document.getElementById("verifiedStudentId").textContent = "-";
+}
+
+function setVerificationCard(data) {
+    const card = document.getElementById("verificationCard");
+    const status = document.getElementById("verificationStatus");
+    const approveBtn = document.getElementById("approveBtn");
+    const eventIdInput = document.getElementById("eventId");
+
+    document.getElementById("verifiedName").textContent = data.name || "-";
+    document.getElementById("verifiedStudentId").textContent = data.student_id || "-";
+    card.style.display = "block";
+
+    if (data.status === "already_checked_in") {
+        status.textContent = "Already checked in for this event.";
+        status.className = "verification-status blocked";
+        approveBtn.disabled = true;
+    } else {
+        status.textContent = "Ready to approve check-in.";
+        status.className = "verification-status ready";
+        approveBtn.disabled = false;
+    }
+
+    eventIdInput.readOnly = true;
+}
+
+async function verifyCheckin(eventId, qrToken, activeButton) {
+    setVerifyButtonsLoading(activeButton);
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/checkin/verify`, {
+            method: 'POST',
+            headers: getStaffHeaders(),
+            body: JSON.stringify({
+                event_id: parseInt(eventId),
+                qr_token: qrToken,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showMessage(data.error || data.message || "Verification failed.", "error");
+            resetVerification();
+            return;
+        }
+
+        verifiedPayload = {
+            eventId: parseInt(eventId),
+            qrToken: qrToken,
+            status: data.status,
+        };
+
+        document.getElementById("qrToken").value = qrToken;
+        setVerificationCard(data);
+    } catch (error) {
+        console.error("Verification error:", error);
+        showMessage("Network error. Please try again.", "error");
+        resetVerification();
+    } finally {
+        resetVerifyButtons(activeButton);
+    }
+}
+
+async function verifyById() {
+    const eventId = document.getElementById("eventId").value;
+    const studentId = document.getElementById("studentId").value.trim();
+    const studentName = document.getElementById("studentName").value.trim();
+    const button = document.getElementById("verifyByIdBtn");
+
+    if (!eventId) {
+        showMessage("Please enter an Event ID.", "error");
+        return;
+    }
+    if (!studentId) {
+        showMessage("Please enter a Student ID.", "error");
+        return;
+    }
+
+    resetVerification();
+    setVerifyButtonsLoading(button);
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/checkin/lookup`, {
+            method: 'POST',
+            headers: getStaffHeaders(),
+            body: JSON.stringify({
+                event_id: parseInt(eventId),
+                student_id: studentId,
+                name: studentName || null,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showMessage(data.error || data.message || "Lookup failed.", "error");
+            resetVerification();
+            return;
+        }
+
+        document.getElementById("qrToken").value = data.qr_token;
+
+        verifiedPayload = {
+            eventId: parseInt(eventId),
+            qrToken: data.qr_token,
+            status: data.status,
+        };
+
+        setVerificationCard(data);
+    } catch (error) {
+        console.error("Lookup error:", error);
+        showMessage("Network error. Please try again.", "error");
+        resetVerification();
+    } finally {
+        resetVerifyButtons(button);
+    }
+}
+
+function verifyTokenManual() {
+    const eventId = document.getElementById("eventId").value;
+    const qrTokenInput = document.getElementById("qrTokenInput").value.trim();
+    const button = document.getElementById("verifyByTokenBtn");
+
+    if (!eventId) {
+        showMessage("Please enter an Event ID.", "error");
+        return;
+    }
+    if (!qrTokenInput) {
+        showMessage("Please enter a QR token.", "error");
+        return;
+    }
+
+    document.getElementById("qrToken").value = qrTokenInput;
+    resetVerification();
+    verifyCheckin(eventId, qrTokenInput, button);
+}
+
+
+async function performCheckin() {
+    if (!verifiedPayload || verifiedPayload.status !== "ready") {
+        showMessage("Please verify the student before approving check-in.", "error");
+        return;
+    }
+
+    const eventId = verifiedPayload.eventId;
+    const qrToken = verifiedPayload.qrToken;
+
+    // Stop scanner if active
+    if (scannerActive) {
+        stopScanner();
+    }
+
+    // Disable button and show loading
+    const btn = document.getElementById("approveBtn");
+    btn.disabled = true;
+    btn.textContent = "Approving...";
+
+    try {
+        // Call checkin API
+        const response = await fetch(`${API_BASE_URL}/checkin`, {
+            method: 'POST',
+            headers: getStaffHeaders(),
+            body: JSON.stringify({
+                event_id: parseInt(eventId),
+                qr_token: qrToken,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            showMessage(data.error || data.message || "Check-in failed.", "error");
+            btn.disabled = false;
+            btn.textContent = "Approve Check-In";
+            return;
+        }
+
+        // Success cases
+        if (data.status === "success") {
+            const timestamp = data.checked_in_at || new Date().toLocaleString();
+            const studentLine = formatStudentLine(data);
+            showMessage(`✓ Check-in successful!${studentLine}<br><strong>Checked in at:</strong> ${timestamp}`, "success");
+            
+            // Clear form
+            document.getElementById("eventId").value = "";
+            document.getElementById("qrToken").value = "";
+            document.getElementById("studentId").value = "";
+            document.getElementById("studentName").value = "";
+            const qrTokenInput = document.getElementById("qrTokenInput");
+            if (qrTokenInput) {
+                qrTokenInput.value = "";
+            }
+            resetVerification();
+            document.getElementById("eventId").focus();
+        } else if (data.status === "already_checked_in") {
+            const studentLine = formatStudentLine(data);
+            showMessage(`⚠ Already checked in for this event.${studentLine}`, "info");
+        } else {
+            showMessage(data.message || "Check-in recorded.", "success");
+        }
+
+        btn.disabled = false;
+        btn.textContent = "Approve Check-In";
+
+    } catch (error) {
+        console.error("Checkin error:", error);
+        showMessage("Network error. Please try again.", "error");
+        btn.disabled = false;
+        btn.textContent = "Approve Check-In";
+    }
+}
+
+function showMessage(message, type) {
+    const messageBox = document.getElementById("messageBox");
+    messageBox.innerHTML = message;
+    messageBox.className = "message-box " + type;
+    messageBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+</script>
+
+</body>
+</html>

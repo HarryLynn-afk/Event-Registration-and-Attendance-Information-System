@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="820" viewBox="0 0 1400 820">
+  <defs>
+    <style>
+      .bg { fill: #f3f4f6; }
+      .titleBar { fill: #1d4ed8; }
+      .titleText { fill: #ffffff; font: 700 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+      .phaseText { fill: #ffffff; font: 700 16px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+      .taskText { fill: #111827; font: 600 13px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+      .taskSub { fill: #374151; font: 500 12px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+      .boxShadow { filter: drop-shadow(0 2px 6px rgba(0,0,0,0.10)); }
+      .line { stroke: #6b7280; stroke-width: 2; fill: none; }
+      .lineStrong { stroke: #111827; stroke-width: 2.5; fill: none; }
+      .arrow { marker-end: url(#arrowHead); }
+      .arrowDark { marker-end: url(#arrowHeadDark); }
+      .legendText { fill: #374151; font: 600 12px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    </style>
+    <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#6b7280" />
+    </marker>
+    <marker id="arrowHeadDark" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L10,3 L0,6 z" fill="#111827" />
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1400" height="820" />
+
+  <!-- Title -->
+  <rect class="titleBar boxShadow" x="250" y="40" width="900" height="64" rx="10" />
+  <text class="titleText" x="700" y="82" text-anchor="middle">Event Registration &amp; Attendance System — Project Plan</text>
+
+  <!-- Phase row -->
+  <!-- Layout constants: x0=20, phaseW=160, gap=15 -->
+  <!-- Phase 1 -->
+  <rect class="boxShadow" x="20" y="140" width="160" height="72" rx="10" fill="#ef4444" />
+  <text class="phaseText" x="100" y="168" text-anchor="middle">Phase 1</text>
+  <text class="phaseText" x="100" y="192" text-anchor="middle">Planning &amp; Setup</text>
+
+  <!-- Phase 2 -->
+  <rect class="boxShadow" x="195" y="140" width="160" height="72" rx="10" fill="#f97316" />
+  <text class="phaseText" x="275" y="168" text-anchor="middle">Phase 2</text>
+  <text class="phaseText" x="275" y="192" text-anchor="middle">Backend Foundation</text>
+
+  <!-- Phase 3 -->
+  <rect class="boxShadow" x="370" y="140" width="160" height="72" rx="10" fill="#f59e0b" />
+  <text class="phaseText" x="450" y="168" text-anchor="middle">Phase 3</text>
+  <text class="phaseText" x="450" y="192" text-anchor="middle">Frontend Foundation</text>
+
+  <!-- Phase 4 -->
+  <rect class="boxShadow" x="545" y="140" width="160" height="72" rx="10" fill="#06b6d4" />
+  <text class="phaseText" x="625" y="168" text-anchor="middle">Phase 4</text>
+  <text class="phaseText" x="625" y="192" text-anchor="middle">Integration &amp; QR</text>
+
+  <!-- Phase 5 -->
+  <rect class="boxShadow" x="720" y="140" width="160" height="72" rx="10" fill="#10b981" />
+  <text class="phaseText" x="800" y="168" text-anchor="middle">Phase 5</text>
+  <text class="phaseText" x="800" y="192" text-anchor="middle">Attendance Features</text>
+
+  <!-- Phase 6 -->
+  <rect class="boxShadow" x="895" y="140" width="160" height="72" rx="10" fill="#8b5cf6" />
+  <text class="phaseText" x="975" y="168" text-anchor="middle">Phase 6</text>
+  <text class="phaseText" x="975" y="192" text-anchor="middle">Access Control</text>
+
+  <!-- Phase 7 -->
+  <rect class="boxShadow" x="1070" y="140" width="160" height="72" rx="10" fill="#64748b" />
+  <text class="phaseText" x="1150" y="168" text-anchor="middle">Phase 7</text>
+  <text class="phaseText" x="1150" y="192" text-anchor="middle">Testing &amp; Docs</text>
+
+  <!-- Phase 8 -->
+  <rect class="boxShadow" x="1245" y="140" width="160" height="72" rx="10" fill="#0f766e" />
+  <text class="phaseText" x="1325" y="168" text-anchor="middle">Phase 8</text>
+  <text class="phaseText" x="1325" y="192" text-anchor="middle">Final Submission</text>
+
+  <!-- Task boxes -->
+  <!-- Task style: light card with border -->
+  <!-- Task 1 -->
+  <rect class="boxShadow" x="20" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="100" y="286" text-anchor="middle">(1) Setup + Repo</text>
+  <text class="taskSub" x="100" y="306" text-anchor="middle">Roles + workflow</text>
+  <text class="taskSub" x="100" y="326" text-anchor="middle">Jan 20–Jan 26</text>
+
+  <!-- Task 2 -->
+  <rect class="boxShadow" x="195" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="275" y="286" text-anchor="middle">(2) Database</text>
+  <text class="taskSub" x="275" y="306" text-anchor="middle">Migrations + seeder</text>
+  <text class="taskSub" x="275" y="326" text-anchor="middle">Jan 20–Feb 2</text>
+
+  <!-- Task 3 -->
+  <rect class="boxShadow" x="195" y="352" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="275" y="378" text-anchor="middle">(3) Core APIs</text>
+  <text class="taskSub" x="275" y="398" text-anchor="middle">events/register/checkin</text>
+  <text class="taskSub" x="275" y="418" text-anchor="middle">Jan 27–Feb 9</text>
+
+  <!-- Task 4 -->
+  <rect class="boxShadow" x="370" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="450" y="286" text-anchor="middle">(4) Frontend UI</text>
+  <text class="taskSub" x="450" y="306" text-anchor="middle">page skeletons</text>
+  <text class="taskSub" x="450" y="326" text-anchor="middle">Jan 20–Feb 2</text>
+
+  <!-- Task 5 -->
+  <rect class="boxShadow" x="545" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="625" y="286" text-anchor="middle">(5) Integration</text>
+  <text class="taskSub" x="625" y="306" text-anchor="middle">fetch + CORS + api.js</text>
+  <text class="taskSub" x="625" y="326" text-anchor="middle">Feb 3–Feb 16</text>
+
+  <!-- Task 6 -->
+  <rect class="boxShadow" x="545" y="352" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="625" y="378" text-anchor="middle">(6) QR Working</text>
+  <text class="taskSub" x="625" y="398" text-anchor="middle">QR generate + page</text>
+  <text class="taskSub" x="625" y="418" text-anchor="middle">Feb 3–Feb 16</text>
+
+  <!-- Task 7 -->
+  <rect class="boxShadow" x="720" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="800" y="286" text-anchor="middle">(7) Staff Check-in</text>
+  <text class="taskSub" x="800" y="306" text-anchor="middle">manual + camera scan</text>
+  <text class="taskSub" x="800" y="326" text-anchor="middle">Feb 10–Feb 23</text>
+
+  <!-- Task 8 -->
+  <rect class="boxShadow" x="720" y="352" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="800" y="378" text-anchor="middle">(8) Dashboard</text>
+  <text class="taskSub" x="800" y="398" text-anchor="middle">counts + filter + table</text>
+  <text class="taskSub" x="800" y="418" text-anchor="middle">Feb 10–Feb 23</text>
+
+  <!-- Task 9 -->
+  <rect class="boxShadow" x="895" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="975" y="286" text-anchor="middle">(9) Login + Roles</text>
+  <text class="taskSub" x="975" y="306" text-anchor="middle">Student vs Staff/Admin</text>
+  <text class="taskSub" x="975" y="326" text-anchor="middle">Feb 24–Mar 9</text>
+
+  <!-- Task 10 -->
+  <rect class="boxShadow" x="1070" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="1150" y="286" text-anchor="middle">(10) Testing Cycle</text>
+  <text class="taskSub" x="1150" y="306" text-anchor="middle">cases + bugs + regression</text>
+  <text class="taskSub" x="1150" y="326" text-anchor="middle">Feb 10–Mar 30</text>
+
+  <!-- Task 11 -->
+  <rect class="boxShadow" x="1070" y="352" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="1150" y="378" text-anchor="middle">(11) Docs Pack</text>
+  <text class="taskSub" x="1150" y="398" text-anchor="middle">ERD + diagrams + manual</text>
+  <text class="taskSub" x="1150" y="418" text-anchor="middle">Mar 3–Apr 13</text>
+
+  <!-- Task 12 -->
+  <rect class="boxShadow" x="1245" y="260" width="160" height="74" rx="10" fill="#ffffff" stroke="#e5e7eb"/>
+  <text class="taskText" x="1325" y="286" text-anchor="middle">(12) Final Freeze</text>
+  <text class="taskSub" x="1325" y="306" text-anchor="middle">packaging + submission</text>
+  <text class="taskSub" x="1325" y="326" text-anchor="middle">Mar 31–Apr 21</text>
+
+  <!-- Phase-to-task connectors -->
+  <path class="line arrow" d="M100 212 L100 260" />
+  <path class="line arrow" d="M275 212 L275 260" />
+  <path class="line arrow" d="M450 212 L450 260" />
+  <path class="line arrow" d="M625 212 L625 260" />
+  <path class="line arrow" d="M800 212 L800 260" />
+  <path class="line arrow" d="M975 212 L975 260" />
+  <path class="line arrow" d="M1150 212 L1150 260" />
+  <path class="line arrow" d="M1325 212 L1325 260" />
+
+  <!-- In-phase connectors (stacked tasks) -->
+  <path class="line arrow" d="M275 334 L275 352" />
+  <!-- 5 -> 6 (explicit dependency) -->
+  <path class="lineStrong arrowDark" d="M625 334 L625 352" />
+  <path class="line arrow" d="M800 334 L800 352" />
+  <path class="line arrow" d="M1150 334 L1150 352" />
+
+  <!-- Key dependency arrows -->
+  <!-- 1 -> 2 -->
+  <path class="line arrow" d="M180 297 L195 297" />
+  <!-- 3 -> 5 -->
+  <path class="line arrow" d="M355 389 C440 389, 440 297, 545 297" />
+  <!-- 4 -> 5 -->
+  <path class="line arrow" d="M530 297 L545 297" />
+  <!-- 6 -> 7 -->
+  <path class="line arrow" d="M705 389 C740 389, 740 297, 720 297" />
+  <!-- 6 -> 8 -->
+  <path class="line arrow" d="M705 389 C740 389, 740 389, 720 389" />
+  <!-- 7 -> 9 -->
+  <path class="line arrow" d="M880 297 L895 297" />
+  <!-- 8 -> 9 -->
+  <path class="line arrow" d="M880 389 C910 389, 910 297, 895 297" />
+  <!-- 9 -> 10 -->
+  <path class="line arrow" d="M1055 297 L1070 297" />
+  <!-- 8 -> 11 (stable flows -> docs) -->
+  <path class="line arrow" d="M880 389 L1070 389" />
+  <!-- 9 -> 11 (stable flows -> docs) -->
+  <path class="line arrow" d="M1055 334 L1055 440 L1070 440 L1070 389" />
+  <!-- 10 -> 12 -->
+  <path class="line arrow" d="M1230 297 L1245 297" />
+  <!-- 11 -> 12 -->
+  <path class="line arrow" d="M1230 389 C1260 389, 1260 297, 1245 297" />
+
+  <!-- Legend -->
+  <rect x="20" y="470" width="1360" height="310" rx="12" fill="#ffffff" stroke="#e5e7eb" class="boxShadow"/>
+  <text class="legendText" x="40" y="505">Notes</text>
+  <text class="taskSub" x="40" y="532">• This is a corrected phase/task diagram aligned to your 12-task plan (typos removed, phases numbered consistently, duplicates removed).</text>
+  <text class="taskSub" x="40" y="554">• Use this diagram as a “work breakdown + dependencies” figure. If you need a true Gantt chart, add a timeline with bars by date.</text>
+  <text class="taskSub" x="40" y="576">• Suggested milestone: End-to-end demo working by Feb 23 (register → QR → check-in → dashboard).</text>
+
+  <text class="legendText" x="40" y="612">Phase mapping</text>
+  <text class="taskSub" x="40" y="636">Phase 1: (1) Setup + Repo + Roles</text>
+  <text class="taskSub" x="40" y="658">Phase 2: (2) Database + Migrations + Seeder, (3) Core API Endpoints</text>
+  <text class="taskSub" x="40" y="680">Phase 3: (4) Frontend Pages Skeleton</text>
+  <text class="taskSub" x="40" y="702">Phase 4: (5) Integration, (6) QR Generate + QR Page Working</text>
+  <text class="taskSub" x="40" y="724">Phase 5: (7) Staff Check-in, (8) Dashboard Attendance</text>
+  <text class="taskSub" x="40" y="746">Phase 6: (9) Login + Roles + protect routes</text>
+  <text class="taskSub" x="40" y="768">Phase 7: (10) Testing Cycle, (11) Docs Pack</text>
+  <text class="taskSub" x="40" y="790">Phase 8: (12) Final Freeze + Packaging + Submission</text>
+</svg>

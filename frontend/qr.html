@@ -7,6 +7,43 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <style>
+    #qrCodeContainer {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 280px;
+      height: 280px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      border: 2px solid #e5e7eb;
+    }
+    #qrCodeContainer img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+    .error-message {
+      color: #dc2626;
+      text-align: center;
+      font-weight: 600;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
 
@@ -15,17 +52,90 @@
   </div>
 
   <div class="qr-container">
-    <div class="qr-box">QR Code</div>
+    <div class="qr-box" id="qrCodeContainer">
+      <div class="loading-spinner"></div>
+    </div>
 
     <h2 class="student-name" id="qrName"></h2>
-<p class="event-name" id="qrEvent"></p>
-
+    <p class="event-name" id="qrEvent"></p>
+    <p id="qrToken" style="text-align: center; font-family: monospace; font-weight: bold; margin-top: 10px;"></p>
 
     <button class="back-btn" onclick="history.back()">← Back</button>
   </div>
+
 <script>
-document.getElementById("qrName").innerText = localStorage.getItem("studentName");
-document.getElementById("qrEvent").innerText = localStorage.getItem("selectedEvent");
+function generateQRCode() {
+    // Read from localStorage
+    const qrToken = localStorage.getItem("qrToken") || localStorage.getItem("qr_token");
+    const eventId = localStorage.getItem("selectedEventId") || localStorage.getItem("event_id");
+    const studentName = localStorage.getItem("studentName") || localStorage.getItem("student_name");
+    const eventName = localStorage.getItem("selectedEvent") || localStorage.getItem("event_title");
+
+    console.log("QR Generation Debug:", { qrToken, eventId, studentName, eventName });
+
+    // Validate required data
+    if (!qrToken || !eventId) {
+        const container = document.getElementById("qrCodeContainer");
+        container.innerHTML = '<p class="error-message">Registration data not found. Redirecting...</p>';
+        console.error("Missing data for QR code:", { qrToken, eventId });
+        
+        setTimeout(() => {
+            window.location.href = "student.html";
+        }, 2000);
+        return;
+    }
+
+    // Display student name and event
+    if (studentName) {
+        document.getElementById("qrName").innerText = studentName;
+    }
+    if (eventName) {
+        document.getElementById("qrEvent").innerText = eventName;
+    }
+    document.getElementById("qrToken").innerText = qrToken;
+
+    // Create JSON payload
+    const payload = JSON.stringify({
+        event_id: parseInt(eventId),
+        qr_token: qrToken
+    });
+
+    console.log("QR Payload:", payload);
+
+    const container = document.getElementById("qrCodeContainer");
+    container.innerHTML = '';
+
+    // Use QR-Server API - most reliable
+    generateQRUsingQRServer(payload, container);
+}
+
+function generateQRUsingQRServer(text, container) {
+    console.log("Generating QR using QR-Server API");
+    
+    const encodedText = encodeURIComponent(text);
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodedText}`;
+    
+    const img = document.createElement('img');
+    img.src = qrCodeUrl;
+    img.alt = "QR Code";
+    img.style.maxWidth = '100%';
+    img.style.height = 'auto';
+    img.style.display = 'block';
+    
+    img.onerror = function() {
+        console.error("QR-Server API failed, showing token as fallback");
+        container.innerHTML = `<p class="error-message">QR unavailable<br>Token: ${text.substring(text.length - 10)}</p>`;
+    };
+    
+    img.onload = function() {
+        console.log("QR Code generated successfully using QR-Server");
+    };
+    
+    container.appendChild(img);
+}
+
+// Generate QR code when page loads
+document.addEventListener('DOMContentLoaded', generateQRCode);
 </script>
 
 </body>

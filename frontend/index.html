@@ -3,88 +3,78 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Campus Events</title>
+  <title>Campus Events - Choose Role</title>
 
   <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div class="header">
-    <h1>Campus Events</h1>
-    <h2>Upcoming Events</h2>
+  <div class="landing-wrap">
+    <div class="landing-card">
+      <h1>Campus Events</h1>
+      <p class="landing-subtitle">Choose how you want to continue.</p>
+
+      <div class="role-grid">
+        <div class="role-card">
+          <h2>Student</h2>
+          <p>Browse events and register for a spot.</p>
+          <button class="primary-btn" onclick="goStudent()">Continue as Student</button>
+        </div>
+
+        <div class="role-card">
+          <h2>Staff</h2>
+          <p>Check in attendees and review attendance.</p>
+          <label class="role-label" for="staffPin">Staff PIN (optional)</label>
+          <input class="pin-input" type="password" id="staffPin" placeholder="Enter staff PIN">
+          <button class="primary-btn" onclick="goStaff()">Continue as Staff</button>
+          <p id="pinError" class="pin-error" aria-live="polite"></p>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="events-grid">
-
-    <!-- Card 1 -->
-    <div class="card">
-      <h3>Tech Talk: Introduction to AI</h3>
-      <p><i class="fa-regular fa-calendar"></i> February 15, 2026</p>
-      <p><i class="fa-regular fa-clock"></i> 2:00 PM - 4:00 PM</p>
-      <p><i class="fa-solid fa-location-dot"></i> Engineering Building, Room 101</p>
-      <button class="register-btn" data-event="Tech Talk: Introduction to AI">Register</button>
-    
-    </div>
-
-    <!-- Card 2 -->
-    <div class="card">
-      <h3>Career Fair 2026</h3>
-      <p><i class="fa-regular fa-calendar"></i> February 20, 2026</p>
-      <p><i class="fa-regular fa-clock"></i> 10:00 AM - 3:00 PM</p>
-      <p><i class="fa-solid fa-location-dot"></i> Student Center</p>
-    <button class="register-btn" data-event="Career Fair 2026">Register</button>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="card">
-      <h3>Photography Workshop</h3>
-      <p><i class="fa-regular fa-calendar"></i> February 22, 2026</p>
-      <p><i class="fa-regular fa-clock"></i> 1:00 PM - 3:00 PM</p>
-      <p><i class="fa-solid fa-location-dot"></i> Arts Building, Studio B</p>
-      <button class="register-btn" data-event="Photography Workshop">Register</button>
-    </div>
-
-    <!-- Card 4 -->
-    <div class="card">
-      <h3>Hackathon Kickoff</h3>
-      <p><i class="fa-regular fa-calendar"></i> March 1, 2026</p>
-      <p><i class="fa-regular fa-clock"></i> 9:00 AM - 9:00 PM</p>
-      <p><i class="fa-solid fa-location-dot"></i> Library, Floor 2</p>
-      <button class="register-btn" data-event="Hackathon Kickoff">Register</button>
-    </div>
-
-    <!-- Card 5 -->
-    <div class="card">
-      <h3>Guest Lecture: Entrepreneurship</h3>
-      <p><i class="fa-regular fa-calendar"></i> March 5, 2026</p>
-      <p><i class="fa-regular fa-clock"></i> 5:00 PM - 6:30 PM</p>
-      <p><i class="fa-solid fa-location-dot"></i> Business School Auditorium</p>
-      <button class="register-btn" data-event="Guest Lecture: Entrepreneurship">Register</button>
-    </div>
-
-    <!-- Card 6 -->
-    <div class="card">
-      <h3>Student Art Exhibition</h3>
-      <p><i class="fa-regular fa-calendar"></i> March 10, 2026</p>
-      <p><i class="fa-regular fa-clock"></i> 11:00 AM - 5:00 PM</p>
-      <p><i class="fa-solid fa-location-dot"></i> Gallery Hall</p>
-      <button class="register-btn" data-event="Student Art Exhibition">Register</button>
-    </div>
-    </div>
-
-  </div>
 <script>
-document.querySelectorAll(".register-btn").forEach(button => {
-    button.addEventListener("click", function() {
-        let eventName = this.getAttribute("data-event");
-        localStorage.setItem("selectedEvent", eventName);
-        window.location.href = "register.html";
+const STAFF_PIN = "1234"; // Change this to your staff PIN.
+
+function goStudent() {
+    sessionStorage.removeItem("staffAuthed");
+    sessionStorage.removeItem("staffPin");
+    window.location.href = "student.html";
+}
+
+function goStaff() {
+    const pinInput = document.getElementById("staffPin");
+    const pinError = document.getElementById("pinError");
+    const enteredPin = pinInput.value.trim();
+    const pinRequired = STAFF_PIN.trim().length > 0;
+
+    pinError.textContent = "";
+
+    if (pinRequired && enteredPin !== STAFF_PIN) {
+        pinError.textContent = "Invalid staff PIN. Please try again.";
+        pinInput.focus();
+        return;
+    }
+
+    sessionStorage.setItem("staffAuthed", "true");
+    sessionStorage.setItem("staffPin", pinRequired ? enteredPin : "");
+    window.location.href = "dashboard.html";
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("staff") === "1") {
+        const pinError = document.getElementById("pinError");
+        pinError.textContent = "Staff access requires the staff PIN.";
+    }
+    const staffPinInput = document.getElementById("staffPin");
+    staffPinInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            goStaff();
+        }
     });
 });
 </script>

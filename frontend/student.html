@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campus Events - Student</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+  <script src="api.js"></script>
+</head>
+<body>
+
+  <div class="header">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1>Campus Events</h1>
+        <h2>Upcoming Events</h2>
+      </div>
+      <a href="index.html" class="dashboard-link">Back to Login</a>
+    </div>
+  </div>
+
+  <div class="events-grid" id="eventsGrid"></div>
+
+<script>
+async function loadEvents() {
+    const events = await fetchEvents();
+    const eventsGrid = document.getElementById('eventsGrid');
+    
+    if (events.length === 0) {
+        eventsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No events available.</p>';
+        return;
+    }
+
+    eventsGrid.innerHTML = events.map(event => `
+        <div class="card">
+            <h3>${event.title}</h3>
+            <p><i class="fa-regular fa-calendar"></i> ${event.date}</p>
+            <p><i class="fa-regular fa-clock"></i> ${event.time}</p>
+            <p><i class="fa-solid fa-location-dot"></i> ${event.location}</p>
+            <button class="register-btn" data-event-id="${event.id}" data-event-title="${event.title}">Register</button>
+        </div>
+    `).join('');
+
+    // Attach click handlers
+    document.querySelectorAll(".register-btn").forEach(button => {
+        button.addEventListener("click", function() {
+            const eventId = this.getAttribute("data-event-id");
+            const eventTitle = this.getAttribute("data-event-title");
+            localStorage.setItem("selectedEventId", eventId);
+            localStorage.setItem("selectedEvent", eventTitle);
+            window.location.href = "register.html";
+        });
+    });
+}
+
+// Load events when page loads
+document.addEventListener('DOMContentLoaded', loadEvents);
+</script>
+
+</body>
+</html>

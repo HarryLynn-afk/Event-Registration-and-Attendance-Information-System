@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Event</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="api.js"></script>
+</head>
+<body>
+
+  <a href="dashboard.html" style="display: inline-block; margin: 20px; color: #2563eb; text-decoration: none; font-weight: 600;">← Back to Dashboard</a>
+
+  <div class="header">
+    <h1>Campus Events</h1>
+    <h2>Create Event</h2>
+  </div>
+
+  <div class="dashboard-container">
+    <div class="create-event-card">
+      <h3>New Event Details</h3>
+      <div class="create-event-grid">
+        <div class="form-group">
+          <label for="eventTitle">Title</label>
+          <input type="text" id="eventTitle" placeholder="Event title">
+        </div>
+        <div class="form-group">
+          <label for="eventDate">Date</label>
+          <input type="date" id="eventDate">
+        </div>
+        <div class="form-group">
+          <label for="eventTime">Time</label>
+          <input type="time" id="eventTime">
+        </div>
+        <div class="form-group">
+          <label for="eventLocation">Location</label>
+          <input type="text" id="eventLocation" placeholder="Location">
+        </div>
+      </div>
+      <button class="primary-btn create-event-btn" onclick="submitEvent()">Create Event</button>
+      <p id="createEventMessage" class="create-event-message" aria-live="polite"></p>
+    </div>
+  </div>
+
+<script>
+function requireStaffAuth() {
+    const staffAuthed = sessionStorage.getItem("staffAuthed");
+    if (staffAuthed !== "true") {
+        window.location.href = "index.html?staff=1";
+        return false;
+    }
+    return true;
+}
+
+async function submitEvent() {
+    const titleInput = document.getElementById('eventTitle');
+    const dateInput = document.getElementById('eventDate');
+    const timeInput = document.getElementById('eventTime');
+    const locationInput = document.getElementById('eventLocation');
+    const message = document.getElementById('createEventMessage');
+    const button = document.querySelector('.create-event-btn');
+
+    const title = titleInput.value.trim();
+    const date = dateInput.value.trim();
+    const time = timeInput.value.trim();
+    const location = locationInput.value.trim();
+
+    message.textContent = "";
+
+    if (!title || !date || !time || !location) {
+        message.textContent = "Please fill in all fields.";
+        message.className = "create-event-message error";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Creating...";
+
+    const result = await createEvent(title, date, time, location);
+
+    if (result && result.error) {
+        message.textContent = result.error;
+        message.className = "create-event-message error";
+    } else {
+        message.textContent = "Event created successfully.";
+        message.className = "create-event-message success";
+        titleInput.value = "";
+        dateInput.value = "";
+        timeInput.value = "";
+        locationInput.value = "";
+    }
+
+    button.disabled = false;
+    button.textContent = "Create Event";
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (!requireStaffAuth()) {
+        return;
+    }
+});
+</script>
+
+</body>
+</html>

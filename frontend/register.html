@@ -7,6 +7,7 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <script src="api.js"></script>
 </head>
 <body>
 
@@ -16,6 +17,7 @@
 
   <div class="form-container">
     <h2>Event Registration</h2>
+    <a href="student.html" class="back-link" style="display: inline-block; margin-bottom: 10px;">← Back to Events</a>
 
    <label>Student ID</label>
 <input type="text" id="studentId" placeholder="Enter your student ID">
@@ -26,21 +28,58 @@
 <label>Email Address</label>
 <input type="email" id="email" placeholder="Enter your email">
 
-    <button class="submit-btn" onclick="saveData()">Submit</button>
+    <button class="submit-btn" onclick="submitRegistration()">Submit</button>
+    <div id="error-message" style="display:none; color: red; margin-top: 10px;"></div>
 
   </div>
 
 <script>
-function saveData() {
-    let name = document.getElementById("fullName").value;
-    let id = document.getElementById("studentId").value;
-    let email = document.getElementById("email").value;
+async function submitRegistration() {
+    const studentId = document.getElementById("studentId").value;
+    const fullName = document.getElementById("fullName").value;
+    const email = document.getElementById("email").value;
+    const eventId = localStorage.getItem("selectedEventId");
+    const eventTitle = localStorage.getItem("selectedEvent");
+    const errorDiv = document.getElementById("error-message");
 
-    localStorage.setItem("studentName", name);
-    localStorage.setItem("studentId", id);
-    localStorage.setItem("studentEmail", email);
+    // Clear previous error message
+    errorDiv.style.display = "none";
 
-    window.location.href = "qr.html";
+    // Validation
+    if (!studentId || !fullName || !email || !eventId || !eventTitle) {
+        errorDiv.textContent = "Error: Missing event or form information. Please go back and select an event.";
+        errorDiv.style.display = "block";
+        return;
+    }
+
+    // Disable button and show loading state
+    const submitBtn = event.target;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    // Submit registration
+    const registration = await registerStudent(eventId, studentId, fullName, email);
+
+    if (registration && registration.qr_token) {
+        // Store registration data for QR page (new keys)
+        localStorage.setItem("qr_token", registration.qr_token);
+        localStorage.setItem("event_id", eventId);
+        localStorage.setItem("student_name", fullName);
+        localStorage.setItem("event_title", eventTitle);
+        // Also store with old keys for backward compatibility
+        localStorage.setItem("registrationId", registration.registration_id);
+        localStorage.setItem("qrToken", registration.qr_token);
+        localStorage.setItem("studentName", fullName);
+
+        // Redirect to QR page
+        window.location.href = "qr.html";
+    } else {
+        // Show error message
+        errorDiv.textContent = registration && registration.error ? registration.error : "Registration failed. Please check your information and try again.";
+        errorDiv.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+    }
 }
 </script>
 

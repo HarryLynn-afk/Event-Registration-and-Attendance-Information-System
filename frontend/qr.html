@@ -6,6 +6,7 @@
   <title>My QR Code</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <style>
     #qrCodeContainer {
@@ -90,6 +91,29 @@
     .btn-secondary:hover {
       background: #f9fafb;
     }
+    .btn-download {
+      padding: 10px 20px;
+      background: #059669;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .btn-download:hover:not(:disabled) {
+      background: #047857;
+    }
+    .btn-download:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
   </style>
 </head>
 <body>
@@ -112,6 +136,9 @@
     </div>
 
     <div class="qr-actions">
+      <button class="btn-download" id="downloadBtn" onclick="downloadQR()" disabled>
+        <i class="fa-solid fa-download"></i> Download QR Code
+      </button>
       <button class="btn-primary" onclick="window.location.href='student.html'">View All Events</button>
       <button class="btn-secondary" onclick="window.location.href='register.html'">Register Another Student</button>
     </div>
@@ -183,9 +210,54 @@ function generateQRUsingQRServer(text, container) {
     
     img.onload = function() {
         console.log("QR Code generated successfully using QR-Server");
+        const downloadBtn = document.getElementById("downloadBtn");
+        if (downloadBtn) {
+            downloadBtn.disabled = false;
+        }
     };
     
     container.appendChild(img);
+}
+
+function downloadQR() {
+    const downloadBtn = document.getElementById("downloadBtn");
+    const img = document.querySelector("#qrCodeContainer img");
+
+    if (!img || !img.src) {
+        downloadBtn.textContent = "Preparing...";
+        setTimeout(() => {
+            downloadBtn.innerHTML = '<i class="fa-solid fa-download"></i> Download QR Code';
+        }, 1500);
+        return;
+    }
+
+    const eventName = localStorage.getItem("selectedEvent") || localStorage.getItem("event_title") || "Event";
+    const studentName = localStorage.getItem("studentName") || localStorage.getItem("student_name") || "Student";
+
+    // Build filename: replace spaces and strip characters not safe for filenames
+    function sanitize(str) {
+        return str.replace(/\s+/g, "_").replace(/[^\w.-]/g, "");
+    }
+
+    const filename = `QR_${sanitize(eventName)}_${sanitize(studentName)}.png`;
+
+    // Fetch the image and trigger download to avoid cross-origin restrictions
+    fetch(img.src)
+        .then(response => response.blob())
+        .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        })
+        .catch(() => {
+            // Fallback: open image in new tab if fetch fails (e.g. strict CORS)
+            window.open(img.src, "_blank");
+        });
 }
 
 // Generate QR code when page loads

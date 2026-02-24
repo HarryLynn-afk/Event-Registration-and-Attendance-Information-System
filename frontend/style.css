@@ -186,6 +186,7 @@ body {
   border-radius: 6px;
   border: 1px solid #ddd;
   font-size: 14px;
+  min-width: 280px;
 }
 
 /* Summary Cards */
@@ -388,11 +389,11 @@ th {
 }
 
 .status.yes {
-  background: #dbeafe;
-  color: #2563eb;
+  background: #dcfce7;
+  color: #16a34a;
 }
 
 .status.no {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #fef3c7;
+  color: #d97706;
 }

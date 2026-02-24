@@ -23,6 +23,30 @@
     .back-link:hover {
       text-decoration: underline;
     }
+    .export-btn {
+      background: #16a34a;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .export-btn:hover {
+      background: #15803d;
+    }
+    .export-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    .table-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 <body>
@@ -63,6 +87,10 @@
     </div>
 
     <!-- Attendance Table -->
+    <div class="table-header-row">
+      <span></span>
+      <button class="export-btn" id="exportBtn" onclick="exportCSV()" disabled>⬇ Export CSV</button>
+    </div>
     <div class="table-container">
       <table>
         <thead>
@@ -84,6 +112,7 @@
 
 <script>
 let allEvents = [];
+let currentRegistrations = [];
 
 function requireStaffAuth() {
     const staffAuthed = sessionStorage.getItem("staffAuthed");
@@ -127,6 +156,8 @@ async function loadAttendanceData() {
         `;
         document.getElementById('totalRegistered').textContent = '0';
         document.getElementById('totalCheckedIn').textContent = '0';
+        currentRegistrations = [];
+        document.getElementById('exportBtn').disabled = true;
         return;
     }
 
@@ -136,6 +167,9 @@ async function loadAttendanceData() {
     })
         .then(r => r.ok ? r.json() : [])
         .catch(() => []);
+
+    currentRegistrations = registrations;
+    document.getElementById('exportBtn').disabled = registrations.length === 0;
 
     const totalRegistered = registrations.length;
     const totalCheckedIn = registrations.filter(r => r.checked_in_at).length;
@@ -167,6 +201,34 @@ async function loadAttendanceData() {
             </td>
         </tr>
     `).join('');
+}
+
+function exportCSV() {
+    if (currentRegistrations.length === 0) return;
+
+    const eventSelect = document.getElementById('eventSelect');
+    const eventTitle = eventSelect.options[eventSelect.selectedIndex].text;
+
+    const headers = ['Student ID', 'Name', 'Email', 'Check-in Status', 'Check-in Time'];
+    const rows = currentRegistrations.map(reg => [
+        reg.student_id,
+        reg.name,
+        reg.email,
+        reg.checked_in_at ? 'Checked In' : 'Not Checked In',
+        reg.checked_in_at ? new Date(reg.checked_in_at).toLocaleString() : '',
+    ]);
+
+    const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `attendance_${eventTitle.replace(/\s+/g, '_')}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
 // Initialize when page loads

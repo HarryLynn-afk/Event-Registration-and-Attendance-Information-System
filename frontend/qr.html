@@ -43,6 +43,53 @@
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
+    .success-banner {
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .qr-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .btn-primary {
+      padding: 10px 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+    .btn-secondary {
+      padding: 10px 20px;
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover {
+      background: #f9fafb;
+    }
   </style>
 </head>
 <body>
@@ -52,6 +99,10 @@
   </div>
 
   <div class="qr-container">
+    <div class="success-banner">
+      <span>✓</span> Registration Successful!
+    </div>
+
     <div class="qr-box" id="qrCodeContainer">
       <div class="loading-spinner"></div>
     </div>
@@ -60,7 +111,10 @@
     <p class="event-name" id="qrEvent"></p>
     <p id="qrToken" style="text-align: center; font-family: monospace; font-weight: bold; margin-top: 10px;"></p>
 
-    <button class="back-btn" onclick="history.back()">← Back</button>
+    <div class="qr-actions">
+      <button class="btn-primary" onclick="window.location.href='student.html'">View All Events</button>
+      <button class="btn-secondary" onclick="window.location.href='register.html'">Register Another Student</button>
+    </div>
   </div>
 
 <script>

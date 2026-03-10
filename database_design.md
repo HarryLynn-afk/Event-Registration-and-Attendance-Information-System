@@ -35,7 +35,8 @@
 
 | Relationship | Type | Description |
 |---|---|---|
-| events → registrations | One-to-Many | One event has many registrations |
+| events → registrations | One-to-Many | One event has many registrations (cascade delete) |
+| users → sessions | One-to-Many | users.id → sessions.user_id (nullable, referential integrity) |
 | (event_id, student_id) | Unique | A student can only register once per event |
 | qr_token | Unique | Each registration has a unique QR code for check-in |
 

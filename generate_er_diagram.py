@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-fig, ax = plt.subplots(figsize=(14, 9))
+fig, ax = plt.subplots(figsize=(14, 10))
 ax.set_xlim(0, 14)
-ax.set_ylim(-0.9, 9.5)
+ax.set_ylim(-0.9, 10.0)
 ax.axis('off')
 fig.patch.set_facecolor('white')
 
@@ -39,29 +39,24 @@ def draw_table(ax, x, y, w, title, cols):
                  facecolor='none', edgecolor='#2C3E50', linewidth=1.8, zorder=4))
     return y - total_h  # bottom y
 
-def draw_arrow(ax, x1, y1, x2, y2, label, color='#E74C3C'):
-    ax.annotate('', xy=(x2, y2), xytext=(x1, y1),
-                arrowprops=dict(arrowstyle='-|>', color=color, lw=2,
-                                mutation_scale=15),
-                zorder=5)
-    ax.text((x1+x2)/2 + 0.15, (y1+y2)/2, label,
-            ha='left', va='center', fontsize=9, fontweight='bold', color=color,
-            bbox=dict(facecolor='white', edgecolor=color, boxstyle='round,pad=0.2', lw=0.8),
-            zorder=6)
+# Row/header heights (must match draw_table)
+ROW_H = 0.42
+HDR_H = 0.55
 
 # ── USERS (left) ─────────────────────────────────────────────────
 users = [
     ('id', 'PK'), ('name', ''), ('email', 'UQ'),
-    ('password', ''), ('created_at', ''), ('updated_at', ''),
+    ('email_verified_at', ''), ('password', ''),
+    ('remember_token', ''), ('created_at', ''), ('updated_at', ''),
 ]
-draw_table(ax, 0.5, 8.2, 3.8, 'users', users)
+draw_table(ax, 0.5, 8.8, 3.8, 'users', users)
 
 # ── EVENTS (centre-top) ──────────────────────────────────────────
 events = [
     ('id', 'PK'), ('title', ''), ('date', ''),
     ('time', ''), ('location', ''), ('created_at', ''), ('updated_at', ''),
 ]
-draw_table(ax, 5.1, 8.2, 3.8, 'events', events)
+draw_table(ax, 5.1, 8.8, 3.8, 'events', events)
 
 # ── REGISTRATIONS (centre-bottom) ────────────────────────────────
 regs = [
@@ -69,25 +64,12 @@ regs = [
     ('name', ''), ('email', ''), ('qr_token', 'UQ'),
     ('checked_in_at', ''), ('created_at', ''), ('updated_at', ''),
 ]
-draw_table(ax, 5.1, 4.0, 3.8, 'registrations', regs)
-
-# ── SESSIONS (right) ─────────────────────────────────────────────
-sessions = [
-    ('id', 'PK'), ('user_id', 'FK'), ('ip_address', ''),
-    ('user_agent', ''), ('payload', ''), ('last_activity', ''),
-]
-draw_table(ax, 9.7, 8.2, 3.8, 'sessions', sessions)
-
-# Row/header heights (must match draw_table)
-ROW_H = 0.42
-HDR_H = 0.55
+draw_table(ax, 5.1, 4.5, 3.8, 'registrations', regs)
 
 # ── RELATIONSHIPS ────────────────────────────────────────────────
 # events.id (PK) → registrations.event_id (FK)  1:N  straight down
-# events bottom: 8.2 - (0.55 + 7*0.42) = 4.71
-# registrations top: 4.0
-events_bottom = 8.2 - (HDR_H + 7 * ROW_H)   # 4.71
-regs_top      = 4.0
+events_bottom = 8.8 - (HDR_H + 7 * ROW_H)   # bottom of events
+regs_top      = 4.5
 mid_x         = 7.0  # centre of both tables
 
 ax.plot([mid_x, mid_x], [events_bottom, regs_top], color='#E74C3C', lw=2, zorder=5)
@@ -97,25 +79,8 @@ ax.text(mid_x + 0.15, (events_bottom + regs_top) / 2, '1 : N',
         ha='left', va='center', fontsize=9, fontweight='bold', color='#E74C3C',
         bbox=dict(facecolor='white', edgecolor='#E74C3C', boxstyle='round,pad=0.2', lw=0.8), zorder=6)
 
-# users.id (PK) → sessions.user_id (FK)  1:N  U-shaped above tables
-# users.id  center y = 8.2 - 0.55 - 0.5*0.42 = 7.44,  right edge x = 4.3
-# sessions.user_id center y = 8.2 - 0.55 - 1.5*0.42 = 7.02, left edge x = 9.7
-users_id_y       = 8.2 - HDR_H - 0.5 * ROW_H   # 7.44
-sessions_uid_y   = 8.2 - HDR_H - 1.5 * ROW_H   # 7.02
-route_y          = 8.68                          # above all table headers
-
-c = '#8E44AD'
-ax.plot([4.3, 4.3, 9.7, 9.7],
-        [users_id_y, route_y, route_y, sessions_uid_y],
-        color=c, lw=2, zorder=5)
-ax.annotate('', xy=(9.7, sessions_uid_y), xytext=(9.7, sessions_uid_y + 0.2),
-            arrowprops=dict(arrowstyle='-|>', color=c, lw=2, mutation_scale=14), zorder=5)
-ax.text(7.0, route_y + 0.05, '1 : N', ha='center', va='bottom', fontsize=9, fontweight='bold',
-        color=c,
-        bbox=dict(facecolor='white', edgecolor=c, boxstyle='round,pad=0.2', lw=0.8), zorder=6)
-
 # ── TITLE ────────────────────────────────────────────────────────
-ax.text(7.0, 9.3, 'ER Diagram — Event Registration & Attendance System',
+ax.text(7.0, 9.8, 'ER Diagram — Event Registration & Attendance System',
         ha='center', va='center', fontsize=13, fontweight='bold', color='#2C3E50')
 
 # ── LEGEND ───────────────────────────────────────────────────────

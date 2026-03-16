@@ -3,7 +3,7 @@ import matplotlib.patches as patches
 
 fig, ax = plt.subplots(figsize=(14, 9))
 ax.set_xlim(0, 14)
-ax.set_ylim(0, 9.5)
+ax.set_ylim(-0.9, 9.5)
 ax.axis('off')
 fig.patch.set_facecolor('white')
 
@@ -69,7 +69,7 @@ regs = [
     ('name', ''), ('email', ''), ('qr_token', 'UQ'),
     ('checked_in_at', ''), ('created_at', ''), ('updated_at', ''),
 ]
-draw_table(ax, 5.1, 4.6, 3.8, 'registrations', regs)
+draw_table(ax, 5.1, 4.0, 3.8, 'registrations', regs)
 
 # ── SESSIONS (right) ─────────────────────────────────────────────
 sessions = [
@@ -78,20 +78,39 @@ sessions = [
 ]
 draw_table(ax, 9.7, 8.2, 3.8, 'sessions', sessions)
 
+# Row/header heights (must match draw_table)
+ROW_H = 0.42
+HDR_H = 0.55
+
 # ── RELATIONSHIPS ────────────────────────────────────────────────
-# events → registrations (1:N)  — straight down from bottom of events to top of registrations
-ax.annotate('', xy=(7.0, 4.6), xytext=(7.0, 4.97),
+# events.id (PK) → registrations.event_id (FK)  1:N  straight down
+# events bottom: 8.2 - (0.55 + 7*0.42) = 4.71
+# registrations top: 4.0
+events_bottom = 8.2 - (HDR_H + 7 * ROW_H)   # 4.71
+regs_top      = 4.0
+mid_x         = 7.0  # centre of both tables
+
+ax.plot([mid_x, mid_x], [events_bottom, regs_top], color='#E74C3C', lw=2, zorder=5)
+ax.annotate('', xy=(mid_x, regs_top), xytext=(mid_x, regs_top + 0.18),
             arrowprops=dict(arrowstyle='-|>', color='#E74C3C', lw=2, mutation_scale=15), zorder=5)
-ax.text(7.15, 4.78, '1 : N', ha='left', va='center', fontsize=9, fontweight='bold',
-        color='#E74C3C',
+ax.text(mid_x + 0.15, (events_bottom + regs_top) / 2, '1 : N',
+        ha='left', va='center', fontsize=9, fontweight='bold', color='#E74C3C',
         bbox=dict(facecolor='white', edgecolor='#E74C3C', boxstyle='round,pad=0.2', lw=0.8), zorder=6)
 
-# users → sessions (1:N)  — route above all tables (U-shaped path)
+# users.id (PK) → sessions.user_id (FK)  1:N  U-shaped above tables
+# users.id  center y = 8.2 - 0.55 - 0.5*0.42 = 7.44,  right edge x = 4.3
+# sessions.user_id center y = 8.2 - 0.55 - 1.5*0.42 = 7.02, left edge x = 9.7
+users_id_y       = 8.2 - HDR_H - 0.5 * ROW_H   # 7.44
+sessions_uid_y   = 8.2 - HDR_H - 1.5 * ROW_H   # 7.02
+route_y          = 8.68                          # above all table headers
+
 c = '#8E44AD'
-ax.plot([2.4, 2.4, 11.6, 11.6], [8.2, 8.65, 8.65, 8.2], color=c, lw=2, zorder=5)
-ax.annotate('', xy=(11.6, 8.2), xytext=(11.6, 8.4),
+ax.plot([4.3, 4.3, 9.7, 9.7],
+        [users_id_y, route_y, route_y, sessions_uid_y],
+        color=c, lw=2, zorder=5)
+ax.annotate('', xy=(9.7, sessions_uid_y), xytext=(9.7, sessions_uid_y + 0.2),
             arrowprops=dict(arrowstyle='-|>', color=c, lw=2, mutation_scale=14), zorder=5)
-ax.text(7.0, 8.72, '1 : N', ha='center', va='bottom', fontsize=9, fontweight='bold',
+ax.text(7.0, route_y + 0.05, '1 : N', ha='center', va='bottom', fontsize=9, fontweight='bold',
         color=c,
         bbox=dict(facecolor='white', edgecolor=c, boxstyle='round,pad=0.2', lw=0.8), zorder=6)
 
@@ -106,7 +125,7 @@ legend_items = [
     ('#27AE60', 'UQ  Unique'),
 ]
 for i, (c, lbl) in enumerate(legend_items):
-    ax.text(0.5 + i * 2.6, 0.35, lbl, ha='left', va='center',
+    ax.text(0.5 + i * 2.6, -0.68, lbl, ha='left', va='center',
             fontsize=8.5, color=c, fontweight='bold')
 
 plt.tight_layout(pad=0.5)
